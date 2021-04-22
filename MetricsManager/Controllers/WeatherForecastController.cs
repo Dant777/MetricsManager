@@ -17,23 +17,58 @@ namespace MetricsManager.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private WeatherForecastCollection _weatherForecasts;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, WeatherForecastCollection weatherForecasts)
         {
             _logger = logger;
+            _weatherForecasts = weatherForecasts;
+          
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+
+        [HttpPost("SaveTemp")]
+        public IActionResult SaveTemp([FromQuery] DateTime date, [FromQuery] int temperature)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+           
+
+            _weatherForecasts.GetCollection.Add(new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+
+                Date = date,
+                TemperatureC = temperature
+
+            });
+            return Ok();
         }
+        [HttpPost("SaveTempInTime")]
+        public IActionResult SaveTempInTime([FromQuery] DateTime date, [FromQuery] int temperature)
+        {
+            bool isTime = true;
+
+            while (isTime)
+            {
+                int n = DateTime.Compare(DateTime.Now, date);
+                if (n >= 0)
+                {
+                    isTime = false;
+                }
+            }
+            _weatherForecasts.GetCollection.Add( new WeatherForecast
+            {
+                //0001-01-01T00:00:00
+                Date = date,
+                TemperatureC = temperature
+
+            });
+            return Ok();
+        }
+
+        [HttpGet("read")]
+        public IActionResult Read()
+        {
+            return Ok(_weatherForecasts.GetCollection);
+        }
+
     }
 }
