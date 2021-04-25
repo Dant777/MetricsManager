@@ -11,10 +11,21 @@ namespace MetricsManager
 
         public WeatherForecastCollection()
         {
-            _weatherForecasts = CreateData().ToList();
+            _weatherForecasts = new List<WeatherForecast>(){
+                new WeatherForecast() { Date = new DateTime(2021, 04, 20, 7, 0, 0 ), TemperatureC = 10 },
+                new WeatherForecast() { Date = new DateTime(2021, 04, 20, 8, 0, 0 ), TemperatureC = 12 },
+                new WeatherForecast() { Date = new DateTime(2021, 04, 21, 8, 0, 0 ), TemperatureC = 14 },
+                new WeatherForecast() { Date = new DateTime(2021, 04, 22, 9, 0, 0 ), TemperatureC = 16 },
+                new WeatherForecast() { Date = new DateTime(2021, 04, 23, 7, 0, 0 ), TemperatureC = 18 },
+                new WeatherForecast() { Date = new DateTime(2021, 04, 24, 7, 0, 0 ), TemperatureC = 20 },
+            };
         }
 
-        public List<WeatherForecast> GetCollection { get => _weatherForecasts; }
+        public List<WeatherForecast> Collection { get => _weatherForecasts; set 
+            {
+                _weatherForecasts = value;
+            }
+        }
 
         private IEnumerable<WeatherForecast> CreateData()
         {

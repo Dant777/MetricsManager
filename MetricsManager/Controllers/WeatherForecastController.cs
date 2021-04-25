@@ -11,10 +11,7 @@ namespace MetricsManager.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+     
 
         private readonly ILogger<WeatherForecastController> _logger;
         private WeatherForecastCollection _weatherForecasts;
@@ -26,13 +23,18 @@ namespace MetricsManager.Controllers
           
         }
 
-
+        /// <summary>
+        /// Добавить температуру и дату в базу данных
+        /// </summary>
+        /// <param name="date">Дата</param>
+        /// <param name="temperature">Температура</param>
+        /// <returns></returns>
         [HttpPost("SaveTemp")]
         public IActionResult SaveTemp([FromQuery] DateTime date, [FromQuery] int temperature)
         {
            
 
-            _weatherForecasts.GetCollection.Add(new WeatherForecast
+            _weatherForecasts.Collection.Add(new WeatherForecast
             {
 
                 Date = date,
@@ -41,6 +43,13 @@ namespace MetricsManager.Controllers
             });
             return Ok();
         }
+
+        /// <summary>
+        /// Сохранить температуру в указанное время
+        /// </summary>
+        /// <param name="date">дата и время редактирование</param>
+        /// <param name="temperature">температура</param>
+        /// <returns></returns>
         [HttpPost("SaveTempInTime")]
         public IActionResult SaveTempInTime([FromQuery] DateTime date, [FromQuery] int temperature)
         {
@@ -54,7 +63,7 @@ namespace MetricsManager.Controllers
                     isTime = false;
                 }
             }
-            _weatherForecasts.GetCollection.Add( new WeatherForecast
+            _weatherForecasts.Collection.Add( new WeatherForecast
             {
                 //0001-01-01T00:00:00
                 Date = date,
@@ -64,11 +73,43 @@ namespace MetricsManager.Controllers
             return Ok();
         }
 
-        [HttpGet("read")]
-        public IActionResult Read()
+        /// <summary>
+        /// Вывести все данные
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ReadAll")]
+        public IActionResult ReadAll()
         {
-            return Ok(_weatherForecasts.GetCollection);
+            return Ok(_weatherForecasts.Collection);
         }
 
+        /// <summary>
+        /// Удалить показатель температуры в указанный промежуток времени
+        /// </summary>
+        /// <param name="startDate">Начальная дата</param>
+        /// <param name="endDate">Конечная дата интервала</param>
+        /// <param name="temperature">Температура для удаления</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteInTimeInterval")]
+        public IActionResult DeleteInTimeInterval([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int temperature)
+        {
+
+            foreach (var item in _weatherForecasts.Collection)
+            {
+                int t_1 = DateTime.Compare(startDate, item.Date);
+                int t_2 = DateTime.Compare(endDate, item.Date);
+
+                bool isInTimeInterval = (t_1 <= 0) && (t_2 >= 0);
+                if (isInTimeInterval)
+                {
+                    if (item.TemperatureC == temperature)
+                    {
+                        _weatherForecasts.Collection.Remove(item);
+                        break;
+                    }
+                }
+            }
+            return Ok();
+        }
     }
 }
