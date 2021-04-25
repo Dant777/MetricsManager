@@ -65,7 +65,7 @@ namespace MetricsManager.Controllers
             }
             _weatherForecasts.Collection.Add( new WeatherForecast
             {
-                //0001-01-01T00:00:00
+               
                 Date = date,
                 TemperatureC = temperature
 
@@ -84,7 +84,40 @@ namespace MetricsManager.Controllers
         }
 
         /// <summary>
-        /// Удалить показатель температуры в указанный промежуток времени
+        /// Редактирует показатель температуры в указанное время
+        /// </summary>
+        /// <param name="date">Дата и вермя для редактирование</param>
+        /// <param name="temperatureToUpdate">Температуру которую надо отредактироватьт</param>
+        /// <param name="newTemperature">Новый показатель температуры</param>
+        /// <returns></returns>
+        [HttpPut("UpdateInTime")]
+        public IActionResult UpdateInTime([FromQuery] DateTime date, [FromQuery] int temperatureToUpdate, [FromQuery] int newTemperature)
+        {
+
+            bool isTime = true;
+
+            while (isTime)
+            {
+                int n = DateTime.Compare(DateTime.Now, date);
+                if (n >= 0)
+                {
+                    isTime = false;
+                }
+            }
+
+            foreach (var item in _weatherForecasts.Collection)
+            {
+                if (item.TemperatureC == temperatureToUpdate)
+                {
+                    item.TemperatureC = newTemperature;
+                }
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Удаляет показатель температуры в указанный промежуток времени
         /// </summary>
         /// <param name="startDate">Начальная дата</param>
         /// <param name="endDate">Конечная дата интервала</param>
