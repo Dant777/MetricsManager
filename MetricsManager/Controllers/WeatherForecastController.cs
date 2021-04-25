@@ -82,7 +82,24 @@ namespace MetricsManager.Controllers
         {
             return Ok(_weatherForecasts.Collection);
         }
+        [HttpGet("ReadTimeInterval")]
+        public IActionResult ReadTimeInterval([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            List<WeatherForecast> list = new List<WeatherForecast>();
 
+            foreach (var item in _weatherForecasts.Collection)
+            {
+                int t_1 = DateTime.Compare(startDate, item.Date);
+                int t_2 = DateTime.Compare(endDate, item.Date);
+
+                bool isInTimeInterval = (t_1 <= 0) && (t_2 >= 0);
+                if (isInTimeInterval)
+                {
+                    list.Add(item);
+                }
+            }
+            return Ok(list);
+        }
         /// <summary>
         /// Редактирует показатель температуры в указанное время
         /// </summary>
@@ -124,7 +141,7 @@ namespace MetricsManager.Controllers
         /// <param name="temperature">Температура для удаления</param>
         /// <returns></returns>
         [HttpDelete("DeleteInTimeInterval")]
-        public IActionResult DeleteInTimeInterval([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int temperature)
+        public IActionResult DeleteTimeInterval([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int temperature)
         {
 
             foreach (var item in _weatherForecasts.Collection)
