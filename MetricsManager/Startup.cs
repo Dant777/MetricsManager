@@ -28,7 +28,7 @@ namespace MetricsManager
         {
 
             services.AddControllers();
-            services.AddSingleton<ValuesHolder>();
+            services.AddSingleton<WeatherForecastCollection>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsManager", Version = "v1" });
