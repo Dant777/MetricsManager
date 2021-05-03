@@ -14,10 +14,13 @@ namespace MetricsAgent.Controllers
     public class CpuAgentController : ControllerBase
     {
         private readonly ILogger<CpuAgentController> _logger;
-        public CpuAgentController(ILogger<CpuAgentController> logger)
+        private ICpuMetricsRepository _cpuMetricsRepository;
+        public CpuAgentController(ICpuMetricsRepository cpuMetricsRepository, ILogger<CpuAgentController> logger)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в CpuAgentController");
+
+            _cpuMetricsRepository = cpuMetricsRepository;
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
