@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -11,9 +12,11 @@ namespace MetricsAgent.Controllers
     public class NetworkMetricsController : ControllerBase
     {
         private INetworkMetricsRepository _repository;
-        public NetworkMetricsController(INetworkMetricsRepository repository)
+        private readonly IMapper _mapper;
+        public NetworkMetricsController(INetworkMetricsRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         [HttpPost("create")]
         public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
@@ -30,24 +33,19 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _repository.GetAll();
+            IList<NetworkMetric> metrics = _repository.GetAll();
 
             var response = new AllNetworkMetricsResponse()
             {
                 Metrics = new List<NetworkMetricDto>()
             };
 
-            if (metrics == null)
-            {
-                return Ok(response);
-            }
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<NetworkMetricDto>(metric));
             }
-
             return Ok(response);
+
         }
     }
 }

@@ -1,3 +1,5 @@
+using AutoMapper;
+using MetricsAgent.AutoMapper;
 using MetricsAgent.Repository.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +33,7 @@ namespace MetricsAgent
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddControllers();
             
             services.AddSingleton<ISqlSettings, SqlSettings>();
@@ -45,6 +48,9 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
             });
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

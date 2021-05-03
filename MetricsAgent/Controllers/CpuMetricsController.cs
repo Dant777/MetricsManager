@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,13 @@ namespace MetricsAgent.Controllers
     public class CpuMetricsController : ControllerBase
     {
         private ICpuMetricsRepository _repository;
-        public CpuMetricsController(ICpuMetricsRepository repository)
+        private readonly IMapper _mapper;
+        public CpuMetricsController(ICpuMetricsRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
+
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
@@ -31,23 +35,18 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _repository.GetAll();
+
+            IList<CpuMetric> metrics = _repository.GetAll();
 
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()
             };
 
-            if (metrics == null)
-            {
-                return Ok(response);
-            }
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
-
             return Ok(response);
         }
     }

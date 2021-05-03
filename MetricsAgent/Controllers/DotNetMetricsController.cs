@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -12,9 +13,11 @@ namespace MetricsAgent.Controllers
     public class DotNetMetricsController : ControllerBase
     {
         private IDotNetMetricsRepository _repository;
-        public DotNetMetricsController(IDotNetMetricsRepository repository)
+        private readonly IMapper _mapper;
+        public DotNetMetricsController(IDotNetMetricsRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpPost("create")]
@@ -32,23 +35,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = _repository.GetAll();
+            IList<DotNetMetric> metrics = _repository.GetAll();
 
             var response = new AllDotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricDto>()
             };
 
-            if (metrics == null)
-            {
-                return Ok(response);
-            }
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
             }
-
             return Ok(response);
         }
     }
