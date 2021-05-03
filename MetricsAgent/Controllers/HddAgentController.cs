@@ -11,8 +11,8 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class HddAgentController : ControllerBase
     {
-        [HttpGet("left")]
-        public IActionResult GetDiskSpace()
+        [HttpGet("left/{fromTime}/to/{toTime}")]
+        public IActionResult GetDiskSpace([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }

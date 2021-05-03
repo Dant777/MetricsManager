@@ -11,7 +11,6 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class NetworkAgentController : ControllerBase
     {
-
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {

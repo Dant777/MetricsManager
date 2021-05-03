@@ -11,8 +11,8 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class RamAgentController : ControllerBase
     {
-        [HttpGet("available")]
-        public IActionResult GetRamSpace()
+        [HttpGet("available/{fromTime}/to/{toTime}")]
+        public IActionResult GetRamSpace([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }
