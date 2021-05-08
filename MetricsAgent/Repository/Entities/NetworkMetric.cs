@@ -8,6 +8,6 @@ namespace MetricsAgent
 
         public int Value { get; set; }
 
-        public TimeSpan Time { get; set; }
+        public DateTime Time { get; set; }
     }
 }

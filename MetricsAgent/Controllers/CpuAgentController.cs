@@ -26,7 +26,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentileFromAgent([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation($"GetMetricsByPercentileFromAgent: fromTime = {fromTime}; toTime = {toTime}; percentil = {percentil};");
+            _logger.LogInformation($"GetMetricsByPercentileFromAgent: fromTime = {fromTime}; toTime = {toTime};");
             return Ok();
         }
 

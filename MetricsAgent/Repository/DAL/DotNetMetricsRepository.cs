@@ -20,14 +20,14 @@ namespace MetricsAgent.Repository.DAL
             using var cmd = new SQLiteCommand(connection);
 
             // прописываем в команду SQL запрос на вставку данных
-            string commandTxt = "INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)";
+            cmd.CommandText = "INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)";
 
             // добавляем параметры в запрос из нашего объекта
             cmd.Parameters.AddWithValue("@value", item.Value);
 
             // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
             // через свойство
-            cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
+            cmd.Parameters.AddWithValue("@time", item.Time.ToString());
 
             // подготовка команды к выполнению
             cmd.Prepare();
@@ -58,7 +58,7 @@ namespace MetricsAgent.Repository.DAL
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
                         // налету преобразуем прочитанные секунды в метку времени
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                        Time = DateTime.Parse(reader.GetString(2))
                     });
                 }
             }
@@ -82,7 +82,7 @@ namespace MetricsAgent.Repository.DAL
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                        Time = DateTime.Parse(reader.GetString(2))
                     };
                 }
                 else

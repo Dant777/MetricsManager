@@ -94,7 +94,7 @@ namespace MetricsAgent
                 command.ExecuteNonQuery();
 
                 command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
+                    value INT, time TEXT)";
                 command.ExecuteNonQuery();
 
                 command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY,

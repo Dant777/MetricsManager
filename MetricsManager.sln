@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManager", "MetricsMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{840C70A5-96CC-4911-AC28-3F0652C5CBA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsManager_Tests", "MetricsManager_Tests\MetricsManager_Tests.csproj", "{7F69C28B-249A-4EDD-B0D9-C141DF49AC51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManager_Tests", "MetricsManager_Tests\MetricsManager_Tests.csproj", "{7F69C28B-249A-4EDD-B0D9-C141DF49AC51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgent_Tests", "MetricsAgent_Tests\MetricsAgent_Tests.csproj", "{C656FCBD-FA04-4F44-8D56-AD53386A77DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgent_Tests", "MetricsAgent_Tests\MetricsAgent_Tests.csproj", "{C656FCBD-FA04-4F44-8D56-AD53386A77DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestConsole", "TestConsole", "{9B86341D-D9BB-4792-B42D-1B699FBF3A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsioleTest", "ConsioleTest\ConsioleTest.csproj", "{90E7317B-0441-4B53-97CF-307686E6D9B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{C656FCBD-FA04-4F44-8D56-AD53386A77DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C656FCBD-FA04-4F44-8D56-AD53386A77DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C656FCBD-FA04-4F44-8D56-AD53386A77DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E7317B-0441-4B53-97CF-307686E6D9B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E7317B-0441-4B53-97CF-307686E6D9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E7317B-0441-4B53-97CF-307686E6D9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E7317B-0441-4B53-97CF-307686E6D9B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90E7317B-0441-4B53-97CF-307686E6D9B4} = {9B86341D-D9BB-4792-B42D-1B699FBF3A38}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F492B39-A240-4ACB-887C-1734D6DA0F7C}
