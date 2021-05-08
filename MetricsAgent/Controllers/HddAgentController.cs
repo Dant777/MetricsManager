@@ -19,7 +19,7 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в HddAgentController");
         }
         
-        public IActionResult GetDiskSpace()
+
         [HttpGet("left/{fromTime}/to/{toTime}")]
         public IActionResult GetDiskSpace([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
