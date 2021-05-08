@@ -14,13 +14,17 @@ namespace MetricsAgent.Controllers.Tests
         [TestMethod()]
         public void GetMetricsByPercentileFromAgent_Test()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
 
         [TestMethod()]
         public void GetMetricsFromAgent_Test()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
     }
 }

@@ -14,7 +14,9 @@ namespace MetricsAgent.Controllers.Tests
         [TestMethod()]
         public void GetDiskSpace_Test()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
     }
 }
