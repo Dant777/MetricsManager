@@ -42,6 +42,11 @@ namespace MetricsAgent.Controllers
                 Metrics = new List<DotNetMetricDto>()
             };
 
+            if (metrics == null)
+            {
+                return Ok(response);
+            }
+
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));

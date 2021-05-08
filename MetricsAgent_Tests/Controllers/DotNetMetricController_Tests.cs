@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AutoMapper;
 using Moq;
 
 namespace MetricsAgent.Controllers.Tests
@@ -15,12 +15,14 @@ namespace MetricsAgent.Controllers.Tests
     {
         private DotNetMetricsController _controller;
         private Mock<IDotNetMetricsRepository> _mock;
+        private Mock<IMapper> _mockMapper;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _mock = new Mock<IDotNetMetricsRepository>();
-            _controller = new DotNetMetricsController(_mock.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new DotNetMetricsController(_mock.Object, _mockMapper.Object);
         }
 
         [TestMethod()]
@@ -28,7 +30,7 @@ namespace MetricsAgent.Controllers.Tests
         {
             _mock.Setup(repository => repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
 
-            var result = _controller.Create(new DotNetMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = _controller.Create(new DotNetMetricCreateRequest { Time = DateTime.Now, Value = 50 });
             _mock.Verify(repository => repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers.Tests
 {
@@ -14,12 +15,14 @@ namespace MetricsAgent.Controllers.Tests
     {
         private NetworkMetricsController _controller;
         private Mock<INetworkMetricsRepository> _mock;
+        private Mock<IMapper> _mockMapper;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _mock = new Mock<INetworkMetricsRepository>();
-            _controller = new NetworkMetricsController(_mock.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new NetworkMetricsController(_mock.Object, _mockMapper.Object);
         }
 
         [TestMethod()]
@@ -27,7 +30,7 @@ namespace MetricsAgent.Controllers.Tests
         {
             _mock.Setup(repository => repository.Create(It.IsAny<NetworkMetric>())).Verifiable();
 
-            var result = _controller.Create(new NetworkMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = _controller.Create(new NetworkMetricCreateRequest { Time = DateTime.Now, Value = 50 });
             _mock.Verify(repository => repository.Create(It.IsAny<NetworkMetric>()), Times.AtMostOnce());
         }
 

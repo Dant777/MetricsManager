@@ -17,6 +17,7 @@ namespace MetricsAgent.Controllers
         public HddMetricsController(IHddMetricsRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         [HttpPost("create")]
         public IActionResult Create([FromBody] HddMetricCreateRequest request)
@@ -39,6 +40,11 @@ namespace MetricsAgent.Controllers
             {
                 Metrics = new List<HddMetricDto>()
             };
+
+            if (metrics == null)
+            {
+                return Ok(response);
+            }
 
             foreach (var metric in metrics)
             {

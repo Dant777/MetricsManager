@@ -24,7 +24,7 @@ namespace MetricsAgent.Repository.DAL
                     new
                     {
                         value = item.Value,
-                        time = item.Time.TotalSeconds
+                        time = item.Time.ToString()
                     });
             }
         }

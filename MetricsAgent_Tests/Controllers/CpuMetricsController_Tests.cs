@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers.Tests
 {
@@ -14,12 +15,15 @@ namespace MetricsAgent.Controllers.Tests
     {
         private CpuMetricsController _controller;
         private Mock<ICpuMetricsRepository> _mock;
+        private Mock<IMapper> _mockMapper;
 
         [TestInitialize]
         public void TestInitialize()
         {
+
             _mock = new Mock<ICpuMetricsRepository>();
-            _controller = new CpuMetricsController(_mock.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new CpuMetricsController(_mock.Object, _mockMapper.Object);
         }
 
         [TestMethod()]
@@ -27,7 +31,7 @@ namespace MetricsAgent.Controllers.Tests
         {
             _mock.Setup(repository => repository.Create(It.IsAny<CpuMetric>())).Verifiable();
 
-            var result = _controller.Create(new CpuMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = _controller.Create(new CpuMetricCreateRequest { Time = DateTime.Now, Value = 50 });
             _mock.Verify(repository => repository.Create(It.IsAny<CpuMetric>()), Times.AtMostOnce());
         }
 

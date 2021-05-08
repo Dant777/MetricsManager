@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers.Tests
 {
@@ -14,12 +15,14 @@ namespace MetricsAgent.Controllers.Tests
     {
         private RamMetricsController _controller;
         private Mock<IRamMetricsRepository> _mock;
+        private Mock<IMapper> _mockMapper;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _mock = new Mock<IRamMetricsRepository>();
-            _controller = new RamMetricsController(_mock.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new RamMetricsController(_mock.Object, _mockMapper.Object);
         }
 
         [TestMethod()]
@@ -27,7 +30,7 @@ namespace MetricsAgent.Controllers.Tests
         {
             _mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
-            var result = _controller.Create(new RamMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = _controller.Create(new RamMetricCreateRequest { Time = DateTime.Now, Value = 50 });
             _mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
         }
 

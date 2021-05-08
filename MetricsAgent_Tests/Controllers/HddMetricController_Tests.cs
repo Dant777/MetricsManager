@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers.Tests
 {
@@ -13,13 +14,15 @@ namespace MetricsAgent.Controllers.Tests
     public class HddMetricController_Tests
     {
         private HddMetricsController _controller;
-        private Mock<IHddMetricsRepository> _mock;
+        private Mock<IHddMetricsRepository> _mock; 
+        private Mock<IMapper> _mockMapper;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _mock = new Mock<IHddMetricsRepository>();
-            _controller = new HddMetricsController(_mock.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new HddMetricsController(_mock.Object, _mockMapper.Object);
         }
 
         [TestMethod()]
@@ -27,7 +30,7 @@ namespace MetricsAgent.Controllers.Tests
         {
             _mock.Setup(repository => repository.Create(It.IsAny<HddMetric>())).Verifiable();
 
-            var result = _controller.Create(new HddMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = _controller.Create(new HddMetricCreateRequest { Time = DateTime.Now, Value = 50 });
             _mock.Verify(repository => repository.Create(It.IsAny<HddMetric>()), Times.AtMostOnce());
         }
 
