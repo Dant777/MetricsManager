@@ -19,8 +19,9 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в RamAgentController");
         }
 
-        [HttpGet("available")]
         public IActionResult GetRamSpace()
+        [HttpGet("available/{fromTime}/to/{toTime}")]
+        public IActionResult GetRamSpace([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             _logger.LogInformation($"GetRamSpace;");
             return Ok();

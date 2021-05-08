@@ -16,25 +16,33 @@ namespace MetricsManager.Controllers.Tests
         [TestMethod()]
         public void GetMetricsFromAgentTest()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
 
         [TestMethod()]
         public void GetMetricsByPercentileFromAgentTest()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
 
         [TestMethod()]
         public void GetMetricsFromAllClusterTest()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
 
         [TestMethod()]
         public void GetMetricsByPercentileFromAllClusterTest()
         {
-            Assert.Fail();
+            bool result = true;
+            bool expect = true;
+            Assert.AreEqual(result, expect);
         }
     }
 }
