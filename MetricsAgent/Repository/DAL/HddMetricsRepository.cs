@@ -4,6 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SQLite;
 using MetricsAgent.Repository.DAL.Helpers;
+using System;
 
 namespace MetricsAgent.Repository.DAL
 {
@@ -47,13 +48,18 @@ namespace MetricsAgent.Repository.DAL
             {
                 return connection.QuerySingle<HddMetric>("SELECT Id, Time, Value FROM hddmetrics WHERE id=@id",
                     new { id = id });
-            }
+            }s
 
         }
 
         public IList<HddMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
-            throw new NotImplementedException();
+            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
+            {
+                return connection.Query<HddMetric>("SELECT Id, Time, Value FROM hddmetrics")
+                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .ToList();
+            }
         }
     }
 }

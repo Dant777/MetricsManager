@@ -4,6 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SQLite;
 using MetricsAgent.Repository.DAL.Helpers;
+using System;
 
 namespace MetricsAgent.Repository.DAL
 {
@@ -52,7 +53,12 @@ namespace MetricsAgent.Repository.DAL
 
         public IList<RamMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
-            throw new NotImplementedException();
+            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
+            {
+                return connection.Query<RamMetric>("SELECT Id, Time, Value FROM rammetrics")
+                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .ToList();
+            }
         }
     }
 }

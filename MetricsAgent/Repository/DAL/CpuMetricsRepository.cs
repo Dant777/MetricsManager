@@ -5,6 +5,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SQLite;
 using MetricsAgent.Repository.DAL.Helpers;
+using System;
 
 namespace MetricsAgent.Repository.DAL
 {
@@ -44,18 +45,14 @@ namespace MetricsAgent.Repository.DAL
 
         public IList<CpuMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
+         
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
-                return connection.QuerySingle<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics WHERE id=@id",
-                    new { id = id });
+                return connection.Query<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics")
+                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .ToList();
             }
 
-            return returnList;
-
         }
-
-
-
-
     }
 }

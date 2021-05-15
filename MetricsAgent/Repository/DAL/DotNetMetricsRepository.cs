@@ -53,7 +53,12 @@ namespace MetricsAgent.Repository.DAL
 
         public IList<DotNetMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
-            throw new NotImplementedException();
+            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
+            {
+                return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics")
+                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .ToList();
+            }
         }
     }
 }
