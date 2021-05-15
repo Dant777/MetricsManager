@@ -48,7 +48,7 @@ namespace MetricsAgent.Repository.DAL
             {
                 return connection.QuerySingle<HddMetric>("SELECT Id, Time, Value FROM hddmetrics WHERE id=@id",
                     new { id = id });
-            }s
+            }
 
         }
 
