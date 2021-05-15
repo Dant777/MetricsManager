@@ -92,5 +92,10 @@ namespace MetricsAgent.Repository.DAL
                 }
             }
         }
+
+        public IList<HddMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -71,33 +71,41 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public CpuMetric GetById(int id)
+        public IList<CpuMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
             using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics WHERE id=@id";
+           
+            cmd.CommandText = "SELECT * FROM cpumetrics";
+
+            var returnList = new List<CpuMetric>();
+
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
-                // если удалось что то прочитать
-                if (reader.Read())
+             
+                while (reader.Read())
                 {
-                    // возвращаем прочитанное
-                    return new CpuMetric
+                    DateTime dbDateTime = DateTime.Parse(reader.GetString(2));
+                    if ( fromTime <= dbDateTime && dbDateTime <= toTime)
                     {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTime.Parse(reader.GetString(2))
-                    };
-                }
-                else
-                {
-                    // не нашлось запись по идентификатору, не делаем ничего
-                    return null;
+                        returnList.Add(new CpuMetric
+                        {
+                            Id = reader.GetInt32(0),
+                            Value = reader.GetInt32(1),
+                            Time = DateTime.Parse(reader.GetString(2))
+                        });
+                    }
+                 
                 }
             }
 
+            return returnList;
+
         }
+
+
+
 
     }
 }
