@@ -50,5 +50,9 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
+        public IList<RamMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

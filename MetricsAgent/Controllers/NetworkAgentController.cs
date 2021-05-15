@@ -13,17 +13,73 @@ namespace MetricsAgent.Controllers
     public class NetworkAgentController : ControllerBase
     {
         private readonly ILogger<NetworkAgentController> _logger;
-        public NetworkAgentController(ILogger<NetworkAgentController> logger)
+        private INetworkMetricsRepository _repository;
+        public NetworkAgentController(INetworkMetricsRepository repository, ILogger<NetworkAgentController> logger)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в NetworkAgentController");
+            _repository = repository;
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        public IActionResult GetByTymePeriod([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
         {
-            _logger.LogInformation($"GetMetricsFromAgent: fromTime = {fromTime}; toTime = {toTime};");
+            _logger.LogInformation($"NetworkAgentController: fromTime = {fromTime}; toTime = {toTime};");
+
+            var metrics = _repository.GetByTimePeriod(fromTime, toTime);
+
+            var response = new AllNetworkMetricsResponse()
+            {
+                Metrics = new List<NetworkMetricDto>()
+            };
+
+            if (metrics == null)
+            {
+                return Ok(response);
+            }
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
+        {
+            _repository.Create(new NetworkMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
             return Ok();
         }
+
+        [HttpGet("all")]
+        public IActionResult GetAll()
+        {
+            var metrics = _repository.GetAll();
+
+            var response = new AllNetworkMetricsResponse()
+            {
+                Metrics = new List<NetworkMetricDto>()
+            };
+
+            if (metrics == null)
+            {
+                return Ok(response);
+            }
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+            }
+
+            return Ok(response);
+        }
+
     }
 }

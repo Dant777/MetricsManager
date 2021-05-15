@@ -42,7 +42,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public CpuMetric GetById(int id)
+        public IList<CpuMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
@@ -50,7 +50,12 @@ namespace MetricsAgent.Repository.DAL
                     new { id = id });
             }
 
+            return returnList;
+
         }
+
+
+
 
     }
 }
