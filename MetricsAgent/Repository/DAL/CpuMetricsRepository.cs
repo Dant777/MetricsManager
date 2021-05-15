@@ -15,7 +15,7 @@ namespace MetricsAgent.Repository.DAL
         public CpuMetricsRepository(ISqlSettings sqlSettings)
         {
             _sqlSettings = sqlSettings;
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            //SqlMapper.AddTypeHandler(new TimeSpanHandler());
         }
 
         public void Create(CpuMetric item)

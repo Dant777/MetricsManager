@@ -30,4 +30,7 @@
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repository\DAL\Migration\" />
+  </ItemGroup>
 </Project>
