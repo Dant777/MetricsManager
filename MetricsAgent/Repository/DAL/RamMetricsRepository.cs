@@ -52,14 +52,5 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public IList<RamMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
-                return connection.Query<RamMetric>("SELECT Id, Time, Value FROM rammetrics")
-                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
-                    .ToList();
-            }
-        }
     }
 }

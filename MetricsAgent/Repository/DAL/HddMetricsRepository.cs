@@ -46,16 +46,6 @@ namespace MetricsAgent.Repository.DAL
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
-                return connection.QuerySingle<HddMetric>("SELECT Id, Time, Value FROM hddmetrics WHERE id=@id",
-                    new { id = id });
-            }
-
-        }
-
-        public IList<HddMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
                 return connection.Query<HddMetric>("SELECT Id, Time, Value FROM hddmetrics")
                     .Where(x => fromTime <= x.Time && x.Time <= toTime)
                     .ToList();

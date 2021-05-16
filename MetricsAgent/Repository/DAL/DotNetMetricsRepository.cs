@@ -41,16 +41,6 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public DotNetMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
-                return connection.QuerySingle<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE id=@id",
-                    new { id = id });
-            }
-
-        }
-
         public IList<DotNetMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
