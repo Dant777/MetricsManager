@@ -10,6 +10,7 @@ namespace MetricsAgent.Repository.DAL
 {
     public class RamMetricsRepository : IRamMetricsRepository
     {
+
         private ISqlSettings _sqlSettings;
         public RamMetricsRepository(ISqlSettings sqlSettings)
         {
@@ -41,7 +42,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public RamMetric GetById(int id)
+        public IList<RamMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {

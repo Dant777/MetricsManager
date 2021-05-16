@@ -43,7 +43,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public NetworkMetric GetById(int id)
+        public IList<NetworkMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {

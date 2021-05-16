@@ -42,7 +42,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public HddMetric GetById(int id)
+        public IList<HddMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {

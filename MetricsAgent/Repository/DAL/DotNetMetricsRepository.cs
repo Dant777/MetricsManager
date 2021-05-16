@@ -51,7 +51,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public IList<DotNetMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<DotNetMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {

@@ -43,7 +43,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public IList<CpuMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<CpuMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
          
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))

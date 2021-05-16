@@ -7,7 +7,7 @@ namespace MetricsAgent
 {
     public interface IRepository<T> where T : class 
     {
-        IList<T> GetByTimePeriod(DateTime fromTime, DateTime toTime);
+        IList<T> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime);
 
         IList<T> GetAll();
 
