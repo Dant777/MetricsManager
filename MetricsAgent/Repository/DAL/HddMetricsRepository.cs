@@ -47,7 +47,9 @@ namespace MetricsAgent.Repository.DAL
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
                 return connection.Query<HddMetric>("SELECT Id, Time, Value FROM hddmetrics")
-                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .Where(x =>
+                            fromTime.DateTime <= DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime
+                            && DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime <= toTime.DateTime)
                     .ToList();
             }
         }
