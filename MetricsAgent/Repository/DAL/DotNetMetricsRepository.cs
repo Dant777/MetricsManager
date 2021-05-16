@@ -27,7 +27,7 @@ namespace MetricsAgent.Repository.DAL
 
             // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
             // через свойство
-            cmd.Parameters.AddWithValue("@time", item.Time.ToString());
+            cmd.Parameters.AddWithValue("@time", item.Time);
 
             // подготовка команды к выполнению
             cmd.Prepare();
@@ -58,7 +58,7 @@ namespace MetricsAgent.Repository.DAL
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
                         // налету преобразуем прочитанные секунды в метку времени
-                        Time = DateTime.Parse(reader.GetString(2))
+                        Time = reader.GetInt64(2)
                     });
                 }
             }
@@ -82,7 +82,7 @@ namespace MetricsAgent.Repository.DAL
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
-                        Time = DateTime.Parse(reader.GetString(2))
+                        Time = reader.GetInt64(2)
                     };
                 }
                 else
@@ -93,9 +93,36 @@ namespace MetricsAgent.Repository.DAL
             }
         }
 
-        public IList<DotNetMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<DotNetMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
-            throw new NotImplementedException();
+            using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+
+            cmd.CommandText = "SELECT * FROM dotnetmetrics";
+
+            var returnList = new List<DotNetMetric>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+
+                while (reader.Read())
+                {
+                    DateTimeOffset dbDateTime = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2));
+                    if (fromTime.DateTime <= dbDateTime.DateTime && dbDateTime.DateTime <= toTime.DateTime)
+                    {
+                        returnList.Add(new DotNetMetric
+                        {
+                            Id = reader.GetInt32(0),
+                            Value = reader.GetInt32(1),
+                            Time = reader.GetInt64(2)
+                        });
+                    }
+
+                }
+            }
+
+            return returnList;
         }
     }
 }

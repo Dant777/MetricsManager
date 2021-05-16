@@ -1,11 +1,14 @@
 ﻿using System.Data.SQLite;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using MetricsAgent.Controllers;
 
 namespace MetricsAgent.Repository.DAL
 {
     public class RamMetricsRepository : IRamMetricsRepository
     {
+
         private ISqlSettings _sqlSettings;
         public RamMetricsRepository(ISqlSettings sqlSettings)
         {
@@ -28,7 +31,7 @@ namespace MetricsAgent.Repository.DAL
 
             // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
             // через свойство
-            cmd.Parameters.AddWithValue("@time", item.Time.ToString());
+            cmd.Parameters.AddWithValue("@time", item.Time);
 
             // подготовка команды к выполнению
             cmd.Prepare();
@@ -59,7 +62,7 @@ namespace MetricsAgent.Repository.DAL
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
                         // налету преобразуем прочитанные секунды в метку времени
-                        Time = DateTime.Parse(reader.GetString(2))
+                        Time = reader.GetInt64(2)
                     });
                 }
             }
@@ -67,36 +70,36 @@ namespace MetricsAgent.Repository.DAL
             return returnList;
         }
 
-        public RamMetric GetById(int id)
+        public IList<RamMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM rammetrics WHERE id=@id";
+
+            cmd.CommandText = "SELECT * FROM rammetrics";
+
+            var returnList = new List<RamMetric>();
+
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
-                // если удалось что то прочитать
-                if (reader.Read())
+
+                while (reader.Read())
                 {
-                    // возвращаем прочитанное
-                    return new RamMetric
+                    DateTimeOffset dbDateTime = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2));
+                    if (fromTime.DateTime <= dbDateTime.DateTime && dbDateTime.DateTime <= toTime.DateTime)
                     {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTime.Parse(reader.GetString(2))
-                    };
-                }
-                else
-                {
-                    // не нашлось запись по идентификатору, не делаем ничего
-                    return null;
+                        returnList.Add(new RamMetric
+                        {
+                            Id = reader.GetInt32(0),
+                            Value = reader.GetInt32(1),
+                            Time = reader.GetInt64(2)
+                        });
+                    }
+
                 }
             }
-        }
 
-        public IList<RamMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
-        {
-            throw new NotImplementedException();
+            return returnList;
         }
     }
 }

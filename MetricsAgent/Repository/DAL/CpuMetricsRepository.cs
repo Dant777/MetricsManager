@@ -28,7 +28,7 @@ namespace MetricsAgent.Repository.DAL
 
             // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
             // через свойство
-            cmd.Parameters.AddWithValue("@time", item.Time.ToString());
+            cmd.Parameters.AddWithValue("@time", item.Time);
 
             // подготовка команды к выполнению
             cmd.Prepare();
@@ -60,7 +60,7 @@ namespace MetricsAgent.Repository.DAL
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
                         // налету преобразуем прочитанные секунды в метку времени
-                        Time = DateTime.Parse(reader.GetString(2))
+                        Time = reader.GetInt64(2)
                     }); 
                 }
             }
@@ -69,7 +69,7 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public IList<CpuMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<CpuMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
             connection.Open();
@@ -84,14 +84,14 @@ namespace MetricsAgent.Repository.DAL
              
                 while (reader.Read())
                 {
-                    DateTime dbDateTime = DateTime.Parse(reader.GetString(2));
-                    if ( fromTime <= dbDateTime && dbDateTime <= toTime)
+                    DateTimeOffset dbDateTime = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2));
+                    if ( fromTime.DateTime <= dbDateTime.DateTime && dbDateTime.DateTime <= toTime.DateTime)
                     {
                         returnList.Add(new CpuMetric
                         {
                             Id = reader.GetInt32(0),
                             Value = reader.GetInt32(1),
-                            Time = DateTime.Parse(reader.GetString(2))
+                            Time = reader.GetInt64(2)
                         });
                     }
                  
