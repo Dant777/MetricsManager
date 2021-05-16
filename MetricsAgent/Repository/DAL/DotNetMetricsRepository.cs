@@ -66,33 +66,6 @@ namespace MetricsAgent.Repository.DAL
             return returnList;
         }
 
-        public DotNetMetric GetById(int id)
-        {
-            using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE id=@id";
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                // если удалось что то прочитать
-                if (reader.Read())
-                {
-                    // возвращаем прочитанное
-                    return new DotNetMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = reader.GetInt64(2)
-                    };
-                }
-                else
-                {
-                    // не нашлось запись по идентификатору, не делаем ничего
-                    return null;
-                }
-            }
-        }
-
         public IList<DotNetMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using var connection = new SQLiteConnection(_sqlSettings.GetConnestionString());
