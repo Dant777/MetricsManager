@@ -30,7 +30,6 @@ namespace MetricsAgent.Repository.DAL
             }
         }
 
-
         public IList<DotNetMetric> GetAll()
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
@@ -41,22 +40,14 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public DotNetMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
-                return connection.QuerySingle<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE id=@id",
-                    new { id = id });
-            }
-
-        }
-
-        public IList<DotNetMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<DotNetMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
                 return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics")
-                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .Where(x =>
+                            fromTime.DateTime <= DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime
+                            && DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime <= toTime.DateTime)
                     .ToList();
             }
         }

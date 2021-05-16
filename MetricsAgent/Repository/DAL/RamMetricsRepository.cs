@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using Dapper;
 using System.Linq;
-using System.Data;
 using System.Data.SQLite;
-using MetricsAgent.Repository.DAL.Helpers;
 using System;
 
 namespace MetricsAgent.Repository.DAL
 {
     public class RamMetricsRepository : IRamMetricsRepository
     {
+
         private ISqlSettings _sqlSettings;
         public RamMetricsRepository(ISqlSettings sqlSettings)
         {
@@ -41,24 +40,18 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public RamMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
-                return connection.QuerySingle<RamMetric>("SELECT Id, Time, Value FROM rammetrics WHERE id=@id",
-                    new { id = id });
-            }
-
-        }
-
-        public IList<RamMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<RamMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
                 return connection.Query<RamMetric>("SELECT Id, Time, Value FROM rammetrics")
-                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .Where(x =>
+                            fromTime.DateTime <= DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime
+                            && DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime <= toTime.DateTime)
                     .ToList();
             }
+
         }
+
     }
 }

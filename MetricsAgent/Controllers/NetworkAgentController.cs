@@ -21,37 +21,12 @@ namespace MetricsAgent.Controllers
             _repository = repository;
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetByTymePeriod([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
-        {
-            _logger.LogInformation($"NetworkAgentController: fromTime = {fromTime}; toTime = {toTime};");
-
-            var metrics = _repository.GetByTimePeriod(fromTime, toTime);
-
-            var response = new AllNetworkMetricsResponse()
-            {
-                Metrics = new List<NetworkMetricDto>()
-            };
-
-            if (metrics == null)
-            {
-                return Ok(response);
-            }
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
-            }
-
-            return Ok(response);
-        }
-
         [HttpPost("create")]
         public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
         {
             _repository.Create(new NetworkMetric
             {
-                Time = request.Time,
+                Time = request.Time.ToUnixTimeSeconds(),
                 Value = request.Value
             });
 
@@ -75,11 +50,35 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new NetworkMetricDto { Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time), Value = metric.Value, Id = metric.Id });
             }
 
             return Ok(response);
         }
 
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetByTymePeriod([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
+        {
+            _logger.LogInformation($"NetworkAgentController: fromTime = {fromTime}; toTime = {toTime};");
+
+            var metrics = _repository.GetByTimePeriod(fromTime, toTime);
+
+            var response = new AllNetworkMetricsResponse()
+            {
+                Metrics = new List<NetworkMetricDto>()
+            };
+
+            if (metrics == null)
+            {
+                return Ok(response);
+            }
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new NetworkMetricDto { Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time), Value = metric.Value, Id = metric.Id });
+            }
+
+            return Ok(response);
+        }
     }
 }

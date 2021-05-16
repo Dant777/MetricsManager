@@ -43,22 +43,14 @@ namespace MetricsAgent.Repository.DAL
 
         }
 
-        public NetworkMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
-            {
-                return connection.QuerySingle<NetworkMetric>("SELECT Id, Time, Value FROM networkmetrics WHERE id=@id",
-                    new { id = id });
-            }
-
-        }
-
-        public IList<NetworkMetric> GetByTimePeriod(DateTime fromTime, DateTime toTime)
+        public IList<NetworkMetric> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using (var connection = new SQLiteConnection(_sqlSettings.GetConnestionString()))
             {
                 return connection.Query<NetworkMetric>("SELECT Id, Time, Value FROM networkmetrics")
-                    .Where(x => fromTime <= x.Time && x.Time <= toTime)
+                    .Where(x =>
+                            fromTime.DateTime <= DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime
+                            && DateTimeOffset.FromUnixTimeSeconds(x.Time).DateTime <= toTime.DateTime)
                     .ToList();
             }
         }
