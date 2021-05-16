@@ -10,10 +10,7 @@ namespace MetricsAgent.Repository.DAL.Helpers
     public class TimeSpanHandler : SqlMapper.TypeHandler<TimeSpan>
     {
         public override TimeSpan Parse(object value)
-        {
-            TimeSpan second = TimeSpan.FromSeconds((long)value);
-            return second;
-        }
+           => TimeSpan.FromSeconds((long)value);
 
 
         public override void SetValue(IDbDataParameter parameter, TimeSpan value) 
