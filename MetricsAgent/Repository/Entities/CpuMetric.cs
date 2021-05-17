@@ -11,6 +11,6 @@ namespace MetricsAgent
 
         public int Value { get; set; }
 
-        public DateTime Time { get; set; }
+        public long Time { get; set; }
     }
 }
