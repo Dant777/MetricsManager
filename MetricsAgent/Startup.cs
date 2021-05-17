@@ -4,6 +4,7 @@ using MetricsAgent.AutoMapper;
 using MetricsAgent.Jobs;
 using MetricsAgent.Jobs.DTO;
 using MetricsAgent.Jobs.Factory;
+using MetricsAgent.Jobs.Services;
 using MetricsAgent.Repository.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,11 +39,11 @@ namespace MetricsAgent
 
             //main
             services.AddSingleton<ISqlSettings, SqlSettings>();
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddTransient<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddTransient<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddTransient<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddTransient<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddTransient<IRamMetricsRepository, RamMetricsRepository>();
             
             //mapper
             var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
@@ -72,7 +73,7 @@ namespace MetricsAgent
 
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CpuMetricJob),
-                cronExpression: "0/5 * * * * ?")); 
+                cronExpression: "0/5 * * * * ?"));
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(DotNetMetricJob),
                 cronExpression: "0/5 * * * * ?"));
@@ -86,6 +87,7 @@ namespace MetricsAgent
                 jobType: typeof(RamMetricJob),
                 cronExpression: "0/5 * * * * ?"));
 
+            services.AddHostedService<QuartzHostedService>();
             //Swagger
             services.AddSwaggerGen(c =>
             {
